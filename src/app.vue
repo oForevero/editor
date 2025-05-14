@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
 import { shortId } from '@/utils/short-id'
+import OpenAI from 'openai'
 
 const editorRef = $ref(null)
 const templates = [
@@ -32,6 +33,9 @@ const options = $ref({
     // defaultMode: 'classic',
     // menus: ['base'],
     importWord: {
+      enabled: true,
+      options: {},
+      useCustomMethod: false,
       async onCustomImportMethod() {
         return await Promise.resolve({
           value: '<p>测试导入word</p>',
@@ -61,8 +65,43 @@ const options = $ref({
   ai: {
     assistant: {
       enabled: true,
-      async onMessage() {
-        return await Promise.resolve('<p>AI助手测试</p>')
+      async onMessage(payload, content) {
+        const client = new OpenAI({
+          baseURL: 'https://open.bigmodel.cn/api/paas/v4',
+          apiKey: '16cd7d2f42f4a32539e2e1d9cad17a6d.FJvJPdHeXA9kp2W8',
+          dangerouslyAllowBrowser: true, // 允许在浏览器中使用 OpenAI SDK
+        })
+        const { command, lang, input, output } = payload
+        //根据语言切换自动续写
+        const langs = {
+          'en-US': '英文',
+          'zh-CN': '中文',
+        }
+        //ai配置
+        const reqOption = {
+          stream: true,
+          model: 'glm-4-flash',
+          messages: [
+            {
+              role: 'system',
+              content: `你是一个文档助手，根据用户输入的文本或者HTML内容，以及对应操作指令，生成符合要求的文档内容。要求如下：1.如果指令不是要求翻译内容，请使用${langs[lang]}返回，否则按用户要求翻译的语言返回；2.返回${output === 'rich-text' ? '富文本（HTML）' : '纯文本（剔除内容中的HTML标记）'}格式；3.如果用户输入的指令你不能理解，在返回的内容前加上“[ERROR]: ”，4.除此之外不返回任何其他多余的内容。`,
+            },
+            {
+              role: 'user',
+              content: `对以下内容进行：【${command}】操作。\n${input}`,
+            },
+          ],
+        }
+        const completion = await client.chat.completions.create(reqOption)
+        const stream = new ReadableStream({
+          async start(controller) {
+            for await (const chunk of completion) {
+              controller.enqueue(chunk.choices[0]?.delta?.content || '')
+            }
+            controller.close()
+          },
+        })
+        return await Promise.resolve(stream)
       },
     },
   },
