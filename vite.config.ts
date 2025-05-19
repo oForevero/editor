@@ -86,6 +86,11 @@ export default defineConfig({
     ReactivityTransform(),
     ...Object.values(vuePlugins),
   ],
+  server: {
+    host: '0.0.0.0', // 接收来自任何 IP 的请求
+    port: 9000,
+    cors: true,      // 启用跨域请求
+  },
   css: cssConfig,
   build: buildConfig,
   resolve: {

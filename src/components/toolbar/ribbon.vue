@@ -77,6 +77,7 @@
             <menus-toolbar-base-import-word />
             <menus-toolbar-base-markdown v-if="!disableItem('markdown')" />
             <menus-toolbar-base-search-replace />
+            <menus-toolbar-base-save-bus-check @save-to-bus="saveToBus" />
           </div>
           <div class="umo-virtual-group">
             <menus-toolbar-base-print v-if="!disableItem('print')" />
@@ -259,7 +260,7 @@ const props = defineProps<{
   }[]
   currentMenu: string
 }>()
-const emits = defineEmits(['menu-change'])
+const emits = defineEmits(['menu-change', 'saveToBus'])
 
 const options = inject('options')
 const disableItem = (name: string) => {
@@ -272,6 +273,11 @@ const changeMenu = async (menu: string) => {
   await nextTick()
   scrollableRef?.update()
 }
+
+const saveToBus = () => {
+  emits('saveToBus')
+}
+
 </script>
 
 <style lang="less" scoped>

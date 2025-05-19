@@ -25,6 +25,7 @@
         <toolbar
           :key="toolbarKey"
           @menu-change="(event: any) => emits('menuChange', event)"
+          @save-to-bus="handleSave"
         >
           <template
             v-for="item in options.toolbar?.menus"
@@ -114,6 +115,7 @@ const emits = defineEmits([
   'saved',
   'destroy',
   'menuChange',
+  'saveToBus'
 ])
 
 // state Setup
@@ -398,6 +400,10 @@ const getLocaleMessage = (lang: SupportedLocale) => {
     return translations
   }
   return {}
+}
+const handleSave = () => {
+  let content = getContent();
+  emits('saveToBus',content)
 }
 mergeLocaleMessage(locale.value, getLocaleMessage(locale.value))
 const { appContext } = getCurrentInstance() ?? {}
