@@ -1,7 +1,7 @@
 <template>
   <div class="examples">
     <div class="box">
-      <umo-editor ref="editorRef" v-bind="options" />
+      <umo-editor ref="editorRef" v-bind="options" @save-to-bus="saveToBus"/>
     </div>
     <!-- <div class="box">
       <umo-editor editor-key="testaaa" :toolbar="{ defaultMode: 'classic' }" />
@@ -10,10 +10,12 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from 'vue'
 import { shortId } from '@/utils/short-id'
 import OpenAI from 'openai'
 
 const editorRef = $ref(null)
+let content = $ref('')
 const templates = [
   {
     title: '工作任务',
@@ -28,6 +30,103 @@ const templates = [
       '<h1>工作周报</h1><h2>本周工作总结</h2><hr /><h3>已完成工作：</h3><ul><li>[任务1名称]：[简要描述任务内容及完成情况]</li><li>[任务2名称]：[简要描述任务内容及完成情况]</li><li>...</li></ul><h3>进行中工作：</h3><ul><li>[任务1名称]：[简要描述任务当前进度和下一步计划]</li><li>[任务2名称]：[简要描述任务当前进度和下一步计划]</li><li>...</li></ul><h3>问题与挑战：</h3><ul><li>[问题1]：[描述遇到的问题及当前解决方案或需要的支持]</li><li>[问题2]：[描述遇到的问题及当前解决方案或需要的支持]</li><li>...</li></ul><hr /><h2>下周工作计划</h2><h3>计划开展工作：</h3><ul><li>[任务1名称]：[简要描述下周计划开始的任务内容]</li><li>[任务2名称]：[简要描述下周计划开始的任务内容]</li><li>...</li></ul><h3>需要支持与资源：</h3><ul><li>[资源1]：[描述需要的资源或支持]</li><li>[资源2]：[描述需要的资源或支持]</li><li>...</li></ul>',
   },
 ]
+
+//接收父页面的消息
+onMounted(() => {
+  window.addEventListener('message', handleMessage)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handleMessage)
+})
+
+//获取配置文件url
+const config = inject<{ apiUrl: string }>('config', { apiUrl: '' })
+console.log(config);
+/**
+ * VUE3获取消息
+ * @param event
+ */
+const handleMessage = (event: MessageEvent) => {
+  debugger
+  // 校验来源
+  if (event.origin !== config.apiUrl){
+    return
+  }
+
+  // 校验数据结构
+  if (
+    typeof event.data === 'object' &&
+    event.data !== null
+  ) {
+    if(event.data.type === 'from-bus-check-method'){
+      let methodName = event.data.payload.methodName;
+      const method = busPltfmMethodMap[methodName];
+      method();
+    }else if(event.data.type === 'from-bus-check-message'){
+      content = event.data.payload.message;
+      //设置内容
+      editorRef.setContent(content);
+      console.log('收到父页面数据：', event.data.payload.message)
+    }
+  }
+}
+//方法列表
+const busPltfmMethodMap: Record<string, () => void> = {
+  doLog() {
+    console.log('doLog 被调用');
+  },
+  doContentSet() {
+    console.log('doContentSet 被调用');
+    editorRef.setcontent('测试设置值');
+  },
+  doTypeWriter() {
+    console.log('打字机写入内容');
+
+    const content = {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Wow, this editor instance exports its content as JSON."
+            }
+          ]
+        }
+      ]
+    };
+
+    const options = {
+      onProgress: (process: number)=>{
+        console.log('doing:'+process)
+      },
+      speed: 50,       // 打字机效果的速度（毫秒），这里设置为每个字符之间间隔50毫秒
+      step: 1,         // 每次显示的字符数量
+      onComplete: ()=>{
+        console.log('finish')
+      }// 打字机状态：3表示重新开始
+    };
+    // 调用 startTypewriter 方法
+    editorRef.startTypewriter(content, options);
+  }
+};
+const saveToBus = (content: string)=>{
+  sendMessageToBusCheck(content);
+}
+const sendMessageToBusCheck = (content: string)=>{
+  window.parent.postMessage(
+    {
+      type: 'from-vue3',
+      payload: {
+        message: content,
+        time: Date.now(),
+      },
+    },
+    config.apiUrl
+  )
+}
 const options = $ref({
   toolbar: {
     // defaultMode: 'classic',
@@ -151,6 +250,7 @@ const options = $ref({
   onFileDelete(id: string, url: string) {
     console.log(id, url)
   },
+
 })
 </script>
 

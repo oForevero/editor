@@ -5,6 +5,7 @@
       :menus="toolbarMenus"
       :current-menu="currentMenu"
       @menu-change="menuChange"
+      @save-to-bus="saveToBus"
     >
       <template
         v-for="item in options.toolbar?.menus"
@@ -134,7 +135,7 @@
 import type { DropdownOption } from 'tdesign-vue-next'
 
 import { timeAgo } from '@/utils/time-ago'
-const emits = defineEmits(['menu-change'])
+const emits = defineEmits(['menu-change', 'saveToBus'])
 
 const container = inject('container')
 const editor = inject('editor')
@@ -163,6 +164,9 @@ let currentMenu = $ref(toolbarMenus[0].value)
 const menuChange = (menu: string) => {
   currentMenu = menu
   emits('menu-change', menu)
+}
+const  saveToBus = () => {
+  emits('saveToBus');
 }
 // 监听如果当前编辑元素为table则切换到table菜单
 watch(
