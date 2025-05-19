@@ -89,6 +89,7 @@
     },
     "importWord": {
       "text": "Import Word",
+      "dialogTitle": "Import Word docx",
       "loadScript": {
         "title": "Error Message",
         "message": "Loading the transformed script, please try again later."

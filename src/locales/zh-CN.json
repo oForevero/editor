@@ -89,6 +89,7 @@
     },
     "importWord": {
       "text": "导入 Word",
+      "dialogTitle": "导入Word文档",
       "loadScript": {
         "title": "错误提示",
         "message": "正在加载转换的脚本，请稍后重试。"

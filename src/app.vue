@@ -48,7 +48,6 @@ console.log(config);
  * @param event
  */
 const handleMessage = (event: MessageEvent) => {
-  debugger
   // 校验来源
   if (event.origin !== config.apiUrl){
     return
