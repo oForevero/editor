@@ -96,8 +96,13 @@ const handleWordImport = async (file: File) => {
     return
   }
 
-  const arrayBuffer = await file.arrayBuffer()
-  // @ts-expect-error
+  // 默认使用 Mammoth 导入
+  const arrayBuffer = file.arrayBuffer()
+  // @ts-expect-error, global variable injected by script
+  if (!mammoth) {
+    return
+  }
+  // @ts-expect-error, global variable injected by script
   const { messages, value } = await mammoth.convertToHtml(
     { arrayBuffer },
     options.value.toolbar?.importWord.options,
@@ -112,6 +117,7 @@ const handleWordImport = async (file: File) => {
   }
 
   try {
+    // 解析和加工 Mammoth 返回的 HTML 内容
     const doc = new DOMParser().parseFromString(value, 'text/html')
     for (const img of doc.querySelectorAll('img')) {
       const parent = img.parentElement
