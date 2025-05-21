@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import EmoDialog from '@/components/modal.vue'
-import { ref, inject, onMounted } from 'vue'
+import mammoth from 'mammoth';
 
 const container = inject('container')
 const editor = inject('editor')
@@ -105,8 +105,7 @@ const handleWordImport = async (file: File) => {
   }
 
   // 默认使用 Mammoth 导入
-  const arrayBuffer = file.arrayBuffer()
-  // @ts-expect-error, global variable injected by script
+  const arrayBuffer = await file.arrayBuffer()
   if (!mammoth) {
     return
   }
@@ -123,20 +122,30 @@ const handleWordImport = async (file: File) => {
 
       "p[style-name='page-break'] => div.page-break:fresh"
     ],
-    transformDocument: mammoth.transforms.paragraph(transformParagraph)
+    // 手动注入 transformDocument
+    transformDocument: (document: any) => {
+      document.children = document.children.map((child: any) => {
+        if (child.type === "paragraph") {
+          return transformParagraph(child)
+        }
+        return child
+      })
+      return document
+    }
   };
-  // @ts-expect-error, global variable injected by script
-  const { messages, value } = await mammoth.convertToHtml(
+  const { value, messages } = await mammoth.convertToHtml(
     { arrayBuffer },
-    importWord,
+    importWord
   )
   message.close()
-  if (messages.type === 'error') {
-    useMessage('error', {
-      attach: container,
-      content: `${t('base.importWord.convertError')} (${messages.message})`,
-    })
-    return
+  for (const msg of messages) {
+    if (msg.type === 'error') {
+      useMessage('error', {
+        attach: container,
+        content: `${t('base.importWord.convertError')} (${msg.message})`,
+      })
+      return
+    }
   }
 
   try {

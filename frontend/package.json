@@ -21,16 +21,12 @@
     "online office",
     "tiptap"
   ],
-  "author": {
-    "name": "umodoc",
-    "email": "contact@umodoc.com",
-    "url": "https://www.umodoc.com"
-  },
+  "author": "umodoc <contact@umodoc.com> (https://www.umodoc.com)",
   "license": "MIT",
   "homepage": "https://editor.umodoc.com/en/docs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/umodoc/editor.git"
+    "url": "git+https://github.com/umodoc/editor.git"
   },
   "bugs": {
     "url": "https://github.com/umodoc/editor/issues",
@@ -119,6 +115,7 @@
     "jsbarcode": "^3.11.6",
     "katex": "^0.16.11",
     "lowlight": "^3.3.0",
+    "mammoth": "^1.9.0",
     "mermaid": "^11.2.0",
     "nzh": "^1.0.13",
     "openai": "^4.98.0",
@@ -157,6 +154,7 @@
     "@vitejs/plugin-vue": "^4.6.2",
     "@vue-macros/reactivity-transform": "^1.0.4",
     "@vue-macros/volar": "^0.29.1",
+    "@vue/compiler-sfc": "^3.5.14",
     "@vue/eslint-config-prettier": "^9.0.0",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^9.1.0",
@@ -179,7 +177,7 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-less": "^3.0.1",
     "tdesign-vue-next": "1.9.8",
-    "typescript": "5.5.4",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.5.0",
     "unplugin-auto-import": "^0.18.2",
     "unplugin-vue": "^5.1.5",
@@ -190,8 +188,8 @@
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.0.5",
-    "vue": "^3.0.11",
-    "vue-tsc": "^2.1.6"
+    "vue": "3.5.14",
+    "vue-tsc": "^2.2.10"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -206,5 +204,6 @@
     "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue}": [
       "eslint --fix src"
     ]
-  }
+  },
+  "main": "index.js"
 }
