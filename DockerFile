@@ -3,16 +3,10 @@
 # 基础镜像
 FROM node:18
 
-# 安装 libreoffice
-RUN apt-get update && \
-    apt-get install -y libreoffice && \
-    mkdir -p /app/frontend /app/backend /tmp/uploads
-
 # 设置工作目录
 WORKDIR /app
 
 # 拷贝项目
-COPY ./backend ./backend
 COPY ./frontend/dist ./frontend/dist
 
 # 安装后端依赖
@@ -21,4 +15,4 @@ RUN npm install
 
 # 启动服务
 EXPOSE 3000
-CMD ["node", "index.js"]
+CMD ["node"]

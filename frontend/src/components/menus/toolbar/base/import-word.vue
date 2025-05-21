@@ -114,13 +114,12 @@ const handleWordImport = async (file: File) => {
       // 对齐 & 标题 & 列表 & 引用 & 分页
       "p[style-name='text-center'] => p.text-center:fresh",
       "p[style-name='text-right'] => p.text-right:fresh",
-      "p.Heading1 => h1:fresh",
-      "p.Heading2 => h2:fresh",
-      "p.Heading3 => h3:fresh",
-      "p.List Paragraph => ul > li:fresh",
-      "p.Quote => blockquote:fresh",
-
-      "p[style-name='page-break'] => div.page-break:fresh"
+      "h1[style-name='标题 1'] => h1.text-center:fresh",
+      "h2[style-name='标题 2'] => h2.text-center:fresh",
+      "h2[style-name='标题 3'] => h3.text-center:fresh",
+      "p[style-name='list-item-center'] => p.text-center:fresh",
+      "tc[style-name='table-cell-center'] => td.text-center:fresh",
+      "p[style-name='custom-block-center'] => div.text-center:fresh",
     ],
     // 手动注入 transformDocument
     transformDocument: (document: any) => {
