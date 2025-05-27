@@ -57,44 +57,34 @@ const handleMessage = (event: MessageEvent) => {
     typeof event.data === 'object' &&
     event.data !== null
   ) {
-    if(event.data.type === 'from-bus-check-method'){
+    if(event.data.type === 'from-KEditor-method'){
       let methodName = event.data.payload.methodName;
       const method = busPltfmMethodMap[methodName];
-      method();
-    }else if(event.data.type === 'from-bus-check-message'){
+      const methodParam = event.data.payload.methodParam;
+      method(methodParam);
+    }else if(event.data.type === 'from-KEditor-message'){
       content = event.data.payload.message;
-      //设置内容
-      editorRef.setContent(content);
       console.log('收到父页面数据：', event.data.payload.message)
     }
   }
 }
 //方法列表
-const busPltfmMethodMap: Record<string, () => void> = {
+const busPltfmMethodMap: Record<string, (methodParam: any) => void> = {
   doLog() {
     console.log('doLog 被调用');
   },
-  doContentSet() {
+  doContentSet(methodParam:string)  {
     console.log('doContentSet 被调用');
-    editorRef.setcontent('测试设置值');
+    editorRef.setContent(methodParam);
   },
-  doTypeWriter() {
+  doContentGet(){
+    let msg = editorRef.getContent();
+    sendMethodToIframe('receiveKEditorContent',msg);
+  },
+  doTypeWriter(methodParam:any) {
     console.log('打字机写入内容');
 
-    const content = {
-      "type": "doc",
-      "content": [
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "Wow, this editor instance exports its content as JSON."
-            }
-          ]
-        }
-      ]
-    };
+    const content = methodParam;
 
     const options = {
       onProgress: (process: number)=>{
@@ -113,12 +103,34 @@ const busPltfmMethodMap: Record<string, () => void> = {
 const saveToBus = (content: string)=>{
   sendMessageToIframe(content);
 }
+/**
+ * 发送消息
+ * @param content
+ */
 const sendMessageToIframe = (content: string)=>{
   window.parent.postMessage(
     {
-      type: 'from-vue3',
+      type: 'from-KEditor-message',
       payload: {
         message: content,
+        time: Date.now(),
+      },
+    },
+    config.apiUrl
+  )
+}
+/**
+ * 执行方法
+ * @param methodName
+ * @param param
+ */
+const sendMethodToIframe = (methodName : string, param : any)=>{
+  window.parent.postMessage(
+    {
+      type: 'from-KEditor-method',
+      payload: {
+        methodName: methodName,
+        methodParam: param,
         time: Date.now(),
       },
     },
