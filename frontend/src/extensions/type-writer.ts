@@ -77,6 +77,7 @@ export default Extension.create({
 
           ;(async () => {
             try {
+              debugger
               // 清除现有计时器
               if (typewriterTimer) {
                 clearTimeout(typewriterTimer)
