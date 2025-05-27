@@ -111,9 +111,9 @@ const busPltfmMethodMap: Record<string, () => void> = {
   }
 };
 const saveToBus = (content: string)=>{
-  sendMessageToBusCheck(content);
+  sendMessageToIframe(content);
 }
-const sendMessageToBusCheck = (content: string)=>{
+const sendMessageToIframe = (content: string)=>{
   window.parent.postMessage(
     {
       type: 'from-vue3',
