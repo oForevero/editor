@@ -1,5 +1,4 @@
 {
-  "welcome": "%cThanks for using Umo Editor%cCurrent version: v{version}, More info: {homepage}",
   "toolbar": {
     "ribbon": "Professional",
     "classic": "Classic",
@@ -630,7 +629,6 @@
     "reset": "Reset"
   },
   "feedback": "Issues / Feedback",
-  "poweredBy": "Powered by Umo Editor",
   "wordCount": {
     "characters": "Characters",
     "title": "Document Statistics",

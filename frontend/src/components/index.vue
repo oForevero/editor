@@ -78,7 +78,6 @@ import type {
   WatermarkOption,
 } from '@/types'
 import { contentTransform } from '@/utils/content-transform'
-import { consoleCopyright } from '@/utils/copyright'
 import { getOpitons } from '@/utils/options'
 import { shortId } from '@/utils/short-id'
 
@@ -212,7 +211,6 @@ watch(
 // Lifecycle Hooks
 onMounted(() => {
   setTheme(options.value.theme)
-  setTimeout(consoleCopyright)
 })
 onBeforeUnmount(() => {
   clearAutoSaveInterval()

@@ -1,5 +1,4 @@
 {
-  "welcome": "%c感谢使用 Umo Editor%c当前版本：v{version}，更多信息请访问：{homepage}",
   "toolbar": {
     "ribbon": "专业工具栏",
     "classic": "经典工具栏",
@@ -629,8 +628,6 @@
     "message": "此操作会清空所有的编辑器设置数据，包括当前编辑的内容，并刷新页面，建议保存内容后再重置，确定要现在重置吗？",
     "reset": "立即重置"
   },
-  "feedback": "问题和建议反馈",
-  "poweredBy": "由「Umo Editor」提供技术支持",
   "wordCount": {
     "characters": "字符",
     "title": "文档信息统计",

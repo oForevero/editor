@@ -42,7 +42,6 @@ onBeforeUnmount(() => {
 
 //获取配置文件url
 const config = inject<{ apiUrl: string }>('config', { apiUrl: '' })
-console.log(config);
 /**
  * VUE3获取消息
  * @param event
@@ -137,7 +136,7 @@ const options = $ref({
   },
   document: {
     title: '测试文档',
-    content: localStorage.getItem('document.content') ?? '<p>测试文档</p>',
+    content: localStorage.getItem('document.content') ?? '<p></p>',
     characterLimit: 10000,
   },
   page: {

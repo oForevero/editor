@@ -39,30 +39,12 @@ const vuePlugins = {
 
 // Build configuration
 const buildConfig = {
-  lib: {
-    entry: `${process.cwd()}/src/components/index.ts`,
-    name: pkg.name,
-    fileName: 'umo-editor',
-  },
   outDir: 'dist',
-  copyPublicDir: false,
+  copyPublicDir: true,
   minify: 'esbuild' as const,
   cssMinify: true,
   rollupOptions: {
-    output: [
-      {
-        banner: copyright,
-        intro: `import './style.css'`,
-        format: 'es' as const,
-      },
-    ],
-    external: [
-      'vue',
-      ...Object.keys(pkg.dependencies ?? {}),
-      /^@vueuse\/.*/,
-      /^@tiptap\/.*/,
-      /^nzh\/.*/,
-    ],
+    input: 'index.html',
     onwarn(warning: any, warn: (warning: any) => void) {
       if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return
       warn(warning)
@@ -80,7 +62,6 @@ const cssConfig = {
 }
 
 export default defineConfig({
-  base: '/umo-editor',
   plugins: [
     tsConfigPaths(),
     ReactivityTransform(),
@@ -88,7 +69,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // 接收来自任何 IP 的请求
-    port: 9000,
+    port: 3000,
     cors: true,      // 启用跨域请求
   },
   css: cssConfig,
