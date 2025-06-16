@@ -23,22 +23,22 @@ docker build -t umo-editor:latest .
 🚨镜像制作好后，如部署服务器无外网需要执行镜像导出，并在服务器上进行安装后部署
 
 ```console
-docker export 容器id > image.tar
+docker save -o image.tar 镜像:版本号
 ```
 导入所需指令
 ```console
-docker import 容器名 < image.tar
+docker load -i image.tar 
 ```
 
 4.✅ 如果无需，则创建对应配置文件后启动
 
 路径映射为如下格式
 ```text
-emo-editor/
+umo-editor/
 ├── nginx.conf
 ├── config.js
 ```
-创建文件夹并进入，上传nginx.conf和config.js
+创建文件夹并进入，上传nginx.conf和config.js，config.js 再public 下
 ```console
 mkdir umo-editor
 cd umo-editor
